@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python If-Else операторлары</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 95vw;
+            height: 95vh;
+            max-width: 1200px;
+            max-height: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100px);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #34495e;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            padding: 25px 30px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 400px;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+        }
+
+        .code-output {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .explanation {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+            background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-indicator {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #6c63ff;
+            transform: scale(1.3);
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 10px;
+            width: 150px;
+        }
+
+        .demo-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animated {
+            animation: pulse 2s infinite;
+        }
+
+        .slide1 {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        }
+
+        .slide2 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .slide3 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .slide4 {
+            background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+        }
+
+        .slide5 {
+            background: linear-gradient(135deg, #c3f0ca 0%, #fde2f3 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Indicators -->
+        <div class="slide-indicator">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <!-- Slide 1: Кіріспе -->
+        <div class="slide slide1 active">
+            <h1>🐍 Python If-Else операторлары</h1>
+            <div class="explanation">
+                <p><strong>Шартты операторлар</strong> - бұл бағдарламаның әртүрлі жағдайларға байланысты әртүрлі әрекеттер жасауына мүмкіндік береді.</p>
+                <br>
+                <p>Бүгін біз үйренетініміз:</p>
+                <p>✅ If операторы</p>
+                <p>✅ Else операторы</p>
+                <p>✅ Elif операторы</p>
+                <p>✅ Практикалық мысалдар</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: If операторы -->
+        <div class="slide slide2">
+            <h2>🔍 If операторы</h2>
+            <div class="explanation">
+                <p><span class="highlight">If</span> операторы шарт орындалса ғана кодты іске қосады</p>
+            </div>
+            
+            <div class="code-block">
+                <div>жас = 18</div>
+                <div>if жас >= 18:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Сіз кәмелетке жеттіңіз!")</div>
+            </div>
+
+            <div class="code-output">
+                Нәтиже: Сіз кәмелетке жеттіңіз!
+            </div>
+
+            <div class="explanation">
+                <p>Егер <span class="highlight">жас >= 18</span> шарты ақиқат болса, хабарлама шығады</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: If-Else операторы -->
+        <div class="slide slide3">
+            <h2>⚖️ If-Else операторы</h2>
+            <div class="explanation">
+                <p><span class="highlight">Else</span> шарт орындалмаса орындалатын кодты көрсетеді</p>
+            </div>
+
+            <div class="code-block">
+                <div>температура = 15</div>
+                <div>if температура > 20:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Жылы ауа райы!")</div>
+                <div>else:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Салқын ауа райы!")</div>
+            </div>
+
+            <div class="code-output">
+                Нәтиже: Салқын ауа райы!
+            </div>
+
+            <div class="explanation">
+                <p>15 < 20 болғандықтан <span class="highlight">else</span> блогы орындалады</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Elif операторы -->
+        <div class="slide slide4">
+            <h2>🔗 Elif операторы</h2>
+            <div class="explanation">
+                <p><span class="highlight">Elif</span> бірнеше шарттарды тексеруге мүмкіндік береді</p>
+            </div>
+
+            <div class="code-block">
+                <div>ұпай = 85</div>
+                <div>if ұпай >= 90:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("А дәрежесі - өте жақсы!")</div>
+                <div>elif ұпай >= 75:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("В дәрежесі - жақсы!")</div>
+                <div>elif ұпай >= 60:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("С дәрежесі - қанағаттанарлық!")</div>
+                <div>else:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("F дәрежесі - қайта тапсыру керек")</div>
+            </div>
+
+            <div class="code-output">
+                Нәтиже: В дәрежесі - жақсы!
+            </div>
+        </div>
+
+        <!-- Slide 5: Интерактивті мысал -->
+        <div class="slide slide5">
+            <h2>🎮 Интерактивті мысал</h2>
+            <div class="explanation">
+                <p>Жасыңызды енгізіп, нәтижені көріңіз!</p>
+            </div>
+
+            <div class="interactive-demo">
+                <input type="number" class="demo-input" id="ageInput" placeholder="Жасыңыз" min="0" max="150">
+                <button class="demo-btn" onclick="checkAge()">Тексеру</button>
+                <div id="result" style="margin-top: 15px; font-weight: bold; font-size: 1.2rem;"></div>
+            </div>
+
+            <div class="code-block">
+                <div>жас = int(input("Жасыңызды енгізіңіз: "))</div>
+                <div>if жас < 13:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Сіз балалар тобындасыз")</div>
+                <div>elif жас < 20:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Сіз жас адамсыз")</div>
+                <div>elif жас < 60:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Сіз орта жастасыз")</div>
+                <div>else:</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;print("Сіз кәрі адамсыз")</div>
+            </div>
+
+            <div class="explanation">
+                <p>🎉 <strong>Қорытынды:</strong> If-else операторлары бағдарламаны интеллектуалды етеді!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◀ Артқа</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Алдыға ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active', 'prev');
+            });
+            
+            // Remove active class from all dots
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            // Show current slide
+            if (n < currentSlide) {
+                slides[currentSlide].classList.add('prev');
+            }
+            slides[n].classList.add('active');
+            dots[n].classList.add('active');
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = (n === 0);
+            document.getElementById('nextBtn').disabled = (n === totalSlides - 1);
+
+            // Update button text for last slide
+            if (n === totalSlides - 1) {
+                document.getElementById('nextBtn').textContent = '🎉 Аяқталды';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Алдыға ▶';
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Interactive demo function
+        function checkAge() {
+            const age = parseInt(document.getElementById('ageInput').value);
+            const resultDiv = document.getElementById('result');
+            
+            if (isNaN(age) || age < 0) {
+                resultDiv.textContent = "Дұрыс жас енгізіңіз!";
+                resultDiv.style.color = "#e74c3c";
+                return;
+            }
+
+            let message = "";
+            let color = "";
+
+            if (age < 13) {
+                message = "🧒 Сіз балалар тобындасыз";
+                color = "#3498db";
+            } else if (age < 20) {
+                message = "🧑 Сіз жас адамсыз";
+                color = "#2ecc71";
+            } else if (age < 60) {
+                message = "👨 Сіз орта жастасыз";
+                color = "#f39c12";
+            } else {
+                message = "👴 Сіз кәрі адамсыз";
+                color = "#9b59b6";
+            }
+
+            resultDiv.textContent = message;
+            resultDiv.style.color = color;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+
+        // Add some visual effects
+        setInterval(() => {
+            const activeSlide = document.querySelector('.slide.active h1, .slide.active h2');
+            if (activeSlide) {
+                activeSlide.style.animation = 'none';
+                setTimeout(() => {
+                    activeSlide.style.animation = 'pulse 2s infinite';
+                }, 100);
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
