@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Тізімдер Сабағы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .presentation-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 95%;
+            max-width: 1100px;
+            height: 90vh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            animation: slideAppear 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff6b6b;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            margin: 25px 0 15px 0;
+            color: #4ecdc4;
+        }
+
+        .slide p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin: 20px 0;
+        }
+
+        .code-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1.2rem;
+            border-left: 5px solid #ff6b6b;
+            position: relative;
+        }
+
+        .code-container::before {
+            content: 'Python';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .python-keyword { color: #569cd6; }
+        .python-string { color: #ce9178; }
+        .python-number { color: #b5cea8; }
+        .python-comment { color: #6a9955; font-style: italic; }
+        .python-method { color: #dcdcaa; }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 5px solid #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.2);
+            border-left: 5px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .method-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 4px solid #4ecdc4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .method-box:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .visual-demo {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .list-element {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .list-element:hover {
+            transform: scale(1.1);
+            background: #ff5252;
+        }
+
+        .index-number {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4ecdc4;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .interactive-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .demo-result {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 1.1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .slide-indicator {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .quiz-area {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quiz-choice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-choice:hover {
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-choice.selected {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 15px 0;
+            font-size: 1.2rem;
+            position: relative;
+            padding-left: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-list li:hover {
+            transform: translateX(10px);
+            color: #4ecdc4;
+        }
+
+        @media (max-width: 768px) {
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide { padding: 20px; height: 95vh; }
+            .methods-grid { grid-template-columns: 1fr; }
+            .demo-buttons { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-wrapper">
+        <div class="slide-indicator">
+            <span id="slide-number">1</span> / <span id="total-slides">5</span>
+        </div>
+
+        <!-- Слайд 1: Кіріспе -->
+        <div class="slide active" id="slide-0">
+            <h1>📋 Python Тізімдер (Lists)</h1>
+            
+            <div style="text-align: center; font-size: 4rem; margin: 20px 0;">🗂️</div>
+            
+            <p style="text-align: center; font-size: 1.8rem; margin: 30px 0;">
+                Бірнеше элементтерді сақтауға арналған өзгермелі деректер құрылымы
+            </p>
+
+            <div class="info-box">
+                <h3>Тізім дегеніміз не?</h3>
+                <p>Тізім - бұл реттелген элементтер жинағы. Python-да тізімдер квадрат жақшамен жазылады және әртүрлі деректер түрлерін сақтай алады.</p>
+            </div>
+
+            <div class="code-container">
+<span class="python-comment"># Бос тізім</span>
+<span class="python-keyword">empty_list</span> = []
+
+<span class="python-comment"># Сандармен тізім</span>
+<span class="python-keyword">numbers</span> = [<span class="python-number">1</span>, <span class="python-number">2</span>, <span class="python-number">3</span>, <span class="python-number">4</span>, <span class="python-number">5</span>]
+
+<span class="python-comment"># Строкалармен тізім</span>
+<span class="python-keyword">cities</span> = [<span class="python-string">"Алматы"</span>, <span class="python-string">"Астана"</span>, <span class="python-string">"Шымкент"</span>]
+
+<span class="python-comment"># Аралас тізім</span>
+<span class="python-keyword">mixed</span> = [<span class="python-string">"Python"</span>, <span class="python-number">3.9</span>, <span class="python-keyword">True</span>, [<span class="python-number">1</span>, <span class="python-number">2</span>]]
+            </div>
+
+            <div class="visual-demo">
+                <div class="list-element">
+                    <div class="index-number">0</div>
+                    Алматы
+                </div>
+                <div class="list-element">
+                    <div class="index-number">1</div>
+                    Астана
+                </div>
+                <div class="list-element">
+                    <div class="index-number">2</div>
+                    Шымкент
+                </div>
+            </div>
+
+            <ul class="feature-list">
+                <li>Тізімдер өзгермелі (mutable) - элементтерді өзгертуге болады</li>
+                <li>Әртүрлі деректер түрлерін сақтай алады</li>
+                <li>Индекстер 0-ден басталады</li>
+                <li>Қайталанатын элементтер болуы мүмкін</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 2: Негізгі операциялар -->
+        <div class="slide" id="slide-1">
+            <h2>🔧 Негізгі Операциялар</h2>
+            
+            <h3>Элементтерге қол жеткізу</h3>
+            <div class="code-container">
+<span class="python-keyword">fruits</span> = [<span class="python-string">"алма"</span>, <span class="python-string">"банан"</span>, <span class="python-string">"алмұрт"</span>]
+
+<span class="python-comment"># Индекс арқылы</span>
+<span class="python-method">print</span>(<span class="python-keyword">fruits</span>[<span class="python-number">0</span>])     <span class="python-comment"># алма</span>
+<span class="python-method">print</span>(<span class="python-keyword">fruits</span>[-<span class="python-number">1</span>])    <span class="python-comment"># алмұрт (соңғы элемент)</span>
+
+<span class="python-comment"># Кесінділер (slicing)</span>
+<span class="python-method">print</span>(<span class="python-keyword">fruits</span>[<span class="python-number">0</span>:<span class="python-number">2</span>])  <span class="python-comment"># ['алма', 'банан']</span>
+<span class="python-method">print</span>(<span class="python-keyword">fruits</span>[<span class="python-number">1</span>:])    <span class="python-comment"># ['банан', 'алмұрт']</span>
+            </div>
+
+            <h3>Элементтерді өзгерту</h3>
+            <div class="code-container">
+<span class="python-keyword">numbers</span> = [<span class="python-number">1</span>, <span class="python-number">2</span>, <span class="python-number">3</span>]
+
+<span class="python-comment"># Жалғыз элементті өзгерту</span>
+<span class="python-keyword">numbers</span>[<span class="python-number">1</span>] = <span class="python-number">10</span>
+<span class="python-method">print</span>(<span class="python-keyword">numbers</span>)  <span class="python-comment"># [1, 10, 3]</span>
+
+<span class="python-comment"># Бірнеше элементті өзгерту</span>
+<span class="python-keyword">numbers</span>[<span class="python-number">0</span>:<span class="python-number">2</span>] = [<span class="python-number">5</span>, <span class="python-number">6</span>]
+<span class="python-method">print</span>(<span class="python-keyword">numbers</span>)  <span class="python-comment"># [5, 6, 3]</span>
+            </div>
+
+            <div class="interactive-section">
+                <h3>🎮 Интерактивті Демо</h3>
+                <p>Тізімді өзгертіп көріңіз:</p>
+                <div class="demo-buttons">
+                    <button class="demo-btn" onclick="addElement()">Элемент қосу</button>
+                    <button class="demo-btn" onclick="removeElement()">Элемент алу</button>
+                    <button class="demo-btn" onclick="changeElement()">Элемент өзгерту</button>
+                    <button class="demo-btn" onclick="resetDemo()">Қалпына келтіру</button>
+                </div>
+                <div class="demo-result" id="demo-output">
+                    ["Python", "Java", "JavaScript"]
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 3: Пайдалы әдістер -->
+        <div class="slide" id="slide-2">
+            <h2>⚡ Тізімнің Пайдалы Әдістері</h2>
+            
+            <div class="methods-grid">
+                <div class="method-box">
+                    <h3><span class="python-method">append()</span></h3>
+                    <p>Соңына элемент қосады</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">fruits</span> = [<span class="python-string">"алма"</span>]
+<span class="python-keyword">fruits</span>.<span class="python-method">append</span>(<span class="python-string">"банан"</span>)
+<span class="python-comment"># ["алма", "банан"]</span>
+                    </div>
+                </div>
+
+                <div class="method-box">
+                    <h3><span class="python-method">insert()</span></h3>
+                    <p>Белгілі позицияға қосады</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">fruits</span>.<span class="python-method">insert</span>(<span class="python-number">1</span>, <span class="python-string">"алмұрт"</span>)
+<span class="python-comment"># ["алма", "алмұрт", "банан"]</span>
+                    </div>
+                </div>
+
+                <div class="method-box">
+                    <h3><span class="python-method">remove()</span></h3>
+                    <p>Элементті алып тастайды</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">fruits</span>.<span class="python-method">remove</span>(<span class="python-string">"банан"</span>)
+<span class="python-comment"># ["алма", "алмұрт"]</span>
+                    </div>
+                </div>
+
+                <div class="method-box">
+                    <h3><span class="python-method">pop()</span></h3>
+                    <p>Элементті алып, қайтарады</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">last</span> = <span class="python-keyword">fruits</span>.<span class="python-method">pop</span>()
+<span class="python-comment"># last = "алмұрт", fruits = ["алма"]</span>
+                    </div>
+                </div>
+
+                <div class="method-box">
+                    <h3><span class="python-method">sort()</span></h3>
+                    <p>Тізімді сұрыптайды</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">numbers</span> = [<span class="python-number">3</span>, <span class="python-number">1</span>, <span class="python-number">4</span>, <span class="python-number">2</span>]
+<span class="python-keyword">numbers</span>.<span class="python-method">sort</span>()
+<span class="python-comment"># [1, 2, 3, 4]</span>
+                    </div>
+                </div>
+
+                <div class="method-box">
+                    <h3><span class="python-method">reverse()</span></h3>
+                    <p>Тізімді кері бұрады</p>
+                    <div class="code-container" style="margin-top: 15px;">
+<span class="python-keyword">numbers</span>.<span class="python-method">reverse</span>()
+<span class="python-comment"># [4, 3, 2, 1]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Тізімдермен жұмыс -->
+        <div class="slide" id="slide-3">
+            <h2>🔄 Тізімдермен Жұмыс Істеу</h2>
+            
+            <h3>1. Тізімді айналып шығу (Iteration)</h3>
+            <div class="code-container">
+<span class="python-keyword">subjects</span> = [<span class="python-string">"Математика"</span>, <span class="python-string">"Физика"</span>, <span class="python-string">"Химия"</span>]
+
+<span class="python-comment"># Қарапайым айналым</span>
+<span class="python-keyword">for</span> <span class="python-keyword">subject</span> <span class="python-keyword">in</span> <span class="python-keyword">subjects</span>:
+    <span class="python-method">print</span>(<span class="python-string">f"Мен {subject} пәнін оқимын"</span>)
+
+<span class="python-comment"># Индекспен айналым</span>
+<span class="python-keyword">for</span> <span class="python-keyword">i</span>, <span class="python-keyword">subject</span> <span class="python-keyword">in</span> <span class="python-method">enumerate</span>(<span class="python-keyword">subjects</span>):
+    <span class="python-method">print</span>(<span class="python-string">f"{i+1}. {subject}"</span>)
+            </div>
+
+            <h3>2. List Comprehension (Тізім түсінігі)</h3>
+            <div class="code-container">
+<span class="python-comment"># Дәстүрлі әдіс</span>
+<span class="python-keyword">squares</span> = []
+<span class="python-keyword">for</span> <span class="python-keyword">x</span> <span class="python-keyword">in</span> <span class="python-method">range</span>(<span class="python-number">5</span>):
+    <span class="python-keyword">def</span> <span class="python-method">get_top_students</span>(<span class="python-keyword">self</span>, <span class="python-keyword">n</span>=<span class="python-number">3</span>):
+        <span class="python-comment"># Студенттер мен бағаларды біріктіру</span>
+        <span class="python-keyword">combined</span> = <span class="python-method">list</span>(<span class="python-method">zip</span>(<span class="python-keyword">self</span>.<span class="python-keyword">students</span>, <span class="python-keyword">self</span>.<span class="python-keyword">grades</span>))
+        <span class="python-comment"># Бағалар бойынша сұрыптау</span>
+        <span class="python-keyword">combined</span>.<span class="python-method">sort</span>(<span class="python-keyword">key</span>=<span class="python-keyword">lambda</span> <span class="python-keyword">x</span>: <span class="python-keyword">x</span>[<span class="python-number">1</span>], <span class="python-keyword">reverse</span>=<span class="python-keyword">True</span>)
+        <span class="python-keyword">return</span> <span class="python-keyword">combined</span>[:<span class="python-keyword">n</span>]
+
+<span class="python-comment"># Қолдану мысалы</span>
+<span class="python-keyword">manager</span> = <span class="python-method">GradeManager</span>()
+
+<span class="python-comment"># Студенттерді қосу</span>
+<span class="python-keyword">manager</span>.<span class="python-method">add_student</span>(<span class="python-string">"Айгүл"</span>, <span class="python-number">95</span>)
+<span class="python-keyword">manager</span>.<span class="python-method">add_student</span>(<span class="python-string">"Нұрлан"</span>, <span class="python-number">87</span>)
+<span class="python-keyword">manager</span>.<span class="python-method">add_student</span>(<span class="python-string">"Асыл"</span>, <span class="python-number">92</span>)
+
+<span class="python-method">print</span>(<span class="python-string">f"Орташа баға: {manager.get_average():.1f}"</span>)
+<span class="python-method">print</span>(<span class="python-string">f"Үздік студенттер: {manager.get_top_students(2)}"</span>)
+            </div>
+
+            <h3>🧮 Пайдалы функциялар</h3>
+            <div class="code-container">
+<span class="python-comment"># Тізімді фильтрлеу</span>
+<span class="python-keyword">def</span> <span class="python-method">filter_passing_grades</span>(<span class="python-keyword">grades</span>, <span class="python-keyword">min_grade</span>=<span class="python-number">60</span>):
+    <span class="python-keyword">return</span> [<span class="python-keyword">grade</span> <span class="python-keyword">for</span> <span class="python-keyword">grade</span> <span class="python-keyword">in</span> <span class="python-keyword">grades</span> <span class="python-keyword">if</span> <span class="python-keyword">grade</span> >= <span class="python-keyword">min_grade</span>]
+
+<span class="python-comment"># Элементтерді топтау</span>
+<span class="python-keyword">def</span> <span class="python-method">group_by_performance</span>(<span class="python-keyword">grades</span>):
+    <span class="python-keyword">excellent</span> = [<span class="python-keyword">g</span> <span class="python-keyword">for</span> <span class="python-keyword">g</span> <span class="python-keyword">in</span> <span class="python-keyword">grades</span> <span class="python-keyword">if</span> <span class="python-keyword">g</span> >= <span class="python-number">90</span>]
+    <span class="python-keyword">good</span> = [<span class="python-keyword">g</span> <span class="python-keyword">for</span> <span class="python-keyword">g</span> <span class="python-keyword">in</span> <span class="python-keyword">grades</span> <span class="python-keyword">if</span> <span class="python-number">70</span> <= <span class="python-keyword">g</span> < <span class="python-number">90</span>]
+    <span class="python-keyword">needs_help</span> = [<span class="python-keyword">g</span> <span class="python-keyword">for</span> <span class="python-keyword">g</span> <span class="python-keyword">in</span> <span class="python-keyword">grades</span> <span class="python-keyword">if</span> <span class="python-keyword">g</span> < <span class="python-number">70</span>]
+    
+    <span class="python-keyword">return</span> {<span class="python-string">"өте_жақсы"</span>: <span class="python-keyword">excellent</span>, <span class="python-string">"жақсы"</span>: <span class="python-keyword">good</span>, <span class="python-string">"көмек_керек"</span>: <span class="python-keyword">needs_help</span>}
+            </div>
+
+            <div class="quiz-area">
+                <h3>🧩 Тапсырма</h3>
+                <p class="python-comment" style="font-size: 1.3rem; margin-bottom: 20px;">
+                    Келесі кодтың нәтижесі қандай болады?
+                </p>
+                <div class="code-container">
+<span class="python-keyword">numbers</span> = [<span class="python-number">1</span>, <span class="python-number">2</span>, <span class="python-number">3</span>, <span class="python-number">4</span>, <span class="python-number">5</span>]
+<span class="python-keyword">result</span> = [<span class="python-keyword">x</span> * <span class="python-number">2</span> <span class="python-keyword">for</span> <span class="python-keyword">x</span> <span class="python-keyword">in</span> <span class="python-keyword">numbers</span> <span class="python-keyword">if</span> <span class="python-keyword">x</span> % <span class="python-number">2</span> == <span class="python-number">0</span>]
+<span class="python-method">print</span>(<span class="python-keyword">result</span>)
+                </div>
+                <div class="quiz-options">
+                    <div class="quiz-choice" onclick="selectAnswer(this, false)">А) [2, 4]</div>
+                    <div class="quiz-choice" onclick="selectAnswer(this, true)">Б) [4, 8]</div>
+                    <div class="quiz-choice" onclick="selectAnswer(this, false)">В) [1, 3, 5]</div>
+                    <div class="quiz-choice" onclick="selectAnswer(this, false)">Г) [2, 4, 6, 8, 10]</div>
+                </div>
+                <div id="quiz-feedback" style="margin-top: 20px; font-size: 1.2rem; display: none;">
+                    <strong style="color: #4ecdc4;">Дұрыс жауап:</strong> Б) [4, 8] 
+                    <br>Себебі: жұп сандарды (2, 4) 2-ге көбейтеді → 2×2=4, 4×2=8
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🎉 Қорытынды</h3>
+                <p>Python тізімдері - бұл өте қуатты және икемді деректер құрылымы. Олардың көмегімен сіз:</p>
+                <ul style="list-style: none; padding-left: 20px; margin-top: 15px;">
+                    <li style="padding: 8px 0;">✅ Көптеген деректерді ұйымдасыра аласыз</li>
+                    <li style="padding: 8px 0;">✅ Деректерді тиімді өңдей аласыз</li>
+                    <li style="padding: 8px 0;">✅ Күрделі алгоритмдер жаза аласыз</li>
+                    <li style="padding: 8px 0;">✅ Код жазуды жеңілдете аласыз</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-navigation">
+        <button class="nav-button" id="prev-button" onclick="goToPrevSlide()">⬅️ Артқа</button>
+        <button class="nav-button" id="next-button" onclick="goToNextSlide()">Алдыға ➡️</button>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSlideIndex = 0;
+        const totalSlides = 5;
+        let demoArray = ["Python", "Java", "JavaScript"];
+
+        // Initialize presentation
+        function initPresentation() {
+            document.getElementById('total-slides').textContent = totalSlides;
+            updateSlide();
+            updateDemo();
+        }
+
+        // Navigation functions
+        function goToNextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+
+        function goToPrevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+
+        function updateSlide() {
+            // Hide all slides
+            const allSlides = document.querySelectorAll('.slide');
+            allSlides.forEach(slide => slide.classList.remove('active'));
+
+            // Show current slide
+            const currentSlide = document.getElementById(`slide-${currentSlideIndex}`);
+            if (currentSlide) {
+                currentSlide.classList.add('active');
+            }
+
+            // Update slide number
+            document.getElementById('slide-number').textContent = currentSlideIndex + 1;
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prev-button');
+            const nextBtn = document.getElementById('next-button');
+            
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+        }
+
+        // Interactive demo functions
+        function updateDemo() {
+            const demoOutput = document.getElementById('demo-output');
+            if (demoOutput) {
+                demoOutput.textContent = JSON.stringify(demoArray, null, 2);
+            }
+        }
+
+        function addElement() {
+            const newElements = ["C++", "Go", "Rust", "Swift", "Kotlin", "PHP", "Ruby"];
+            const randomElement = newElements[Math.floor(Math.random() * newElements.length)];
+            if (!demoArray.includes(randomElement)) {
+                demoArray.push(randomElement);
+                updateDemo();
+            }
+        }
+
+        function removeElement() {
+            if (demoArray.length > 0) {
+                demoArray.pop();
+                updateDemo();
+            }
+        }
+
+        function changeElement() {
+            if (demoArray.length > 0) {
+                const index = Math.floor(Math.random() * demoArray.length);
+                const newElements = ["C#", "Scala", "Perl", "Haskell"];
+                demoArray[index] = newElements[Math.floor(Math.random() * newElements.length)];
+                updateDemo();
+            }
+        }
+
+        function resetDemo() {
+            demoArray = ["Python", "Java", "JavaScript"];
+            updateDemo();
+        }
+
+        // Quiz function
+        function selectAnswer(element, isCorrect) {
+            // Remove previous selections
+            document.querySelectorAll('.quiz-choice').forEach(choice => {
+                choice.classList.remove('selected');
+            });
+
+            // Select current answer
+            element.classList.add('selected');
+
+            // Show feedback
+            const feedback = document.getElementById('quiz-feedback');
+            if (feedback) {
+                feedback.style.display = 'block';
+                if (isCorrect) {
+                    feedback.style.color = '#4caf50';
+                } else {
+                    feedback.style.color = '#ff6b6b';
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                goToNextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                goToPrevSlide();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initPresentation();
+            
+            // Add hover effects to method boxes
+            setTimeout(() => {
+                document.querySelectorAll('.method-box').forEach(box => {
+                    box.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-8px) scale(1.02)';
+                    });
+                    
+                    box.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    });
+                });
+
+                // Add click effects to list elements
+                document.querySelectorAll('.list-element').forEach(element => {
+                    element.addEventListener('click', function() {
+                        this.style.animation = 'none';
+                        setTimeout(() => {
+                            this.style.animation = 'bounce 0.5s ease';
+                        }, 10);
+                    });
+                });
+            }, 100);
+        });
+
+        // Add bounce animation for list elements
+        const bounceStyle = document.createElement('style');
+        bounceStyle.textContent = `
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-10px); }
+                60% { transform: translateY(-5px); }
+            }
+        `;
+        document.head.appendChild(bounceStyle);
+    </script>
+</body>
+</html>d">squares</span>.<span class="python-method">append</span>(<span class="python-keyword">x</span> ** <span class="python-number">2</span>)
+
+<span class="python-comment"># List comprehension (жылдам әдіс)</span>
+<span class="python-keyword">squares</span> = [<span class="python-keyword">x</span> ** <span class="python-number">2</span> <span class="python-keyword">for</span> <span class="python-keyword">x</span> <span class="python-keyword">in</span> <span class="python-method">range</span>(<span class="python-number">5</span>)]
+<span class="python-method">print</span>(<span class="python-keyword">squares</span>)  <span class="python-comment"># [0, 1, 4, 9, 16]</span>
+
+<span class="python-comment"># Шартпен</span>
+<span class="python-keyword">evens</span> = [<span class="python-keyword">x</span> <span class="python-keyword">for</span> <span class="python-keyword">x</span> <span class="python-keyword">in</span> <span class="python-method">range</span>(<span class="python-number">10</span>) <span class="python-keyword">if</span> <span class="python-keyword">x</span> % <span class="python-number">2</span> == <span class="python-number">0</span>]
+<span class="python-method">print</span>(<span class="python-keyword">evens</span>)  <span class="python-comment"># [0, 2, 4, 6, 8]</span>
+            </div>
+
+            <div class="warning-box">
+                <h3>💡 Кеңес</h3>
+                <p>List comprehension пайдаланғанда код қысқа да тез болады, бірақ күрделі логика үшін дәстүрлі циклдарды пайдаланыңыз!</p>
+            </div>
+
+            <h3>3. Пайдалы функциялар</h3>
+            <div class="code-container">
+<span class="python-keyword">numbers</span> = [<span class="python-number">3</span>, <span class="python-number">1</span>, <span class="python-number">4</span>, <span class="python-number">1</span>, <span class="python-number">5</span>]
+
+<span class="python-method">len</span>(<span class="python-keyword">numbers</span>)      <span class="python-comment"># 5 - ұзындық</span>
+<span class="python-method">max</span>(<span class="python-keyword">numbers</span>)      <span class="python-comment"># 5 - максимум</span>
+<span class="python-method">min</span>(<span class="python-keyword">numbers</span>)      <span class="python-comment"># 1 - минимум</span>
+<span class="python-method">sum</span>(<span class="python-keyword">numbers</span>)      <span class="python-comment"># 14 - қосынды</span>
+<span class="python-number">4</span> <span class="python-keyword">in</span> <span class="python-keyword">numbers</span>     <span class="python-comment"># True - бар ма?</span>
+            </div>
+        </div>
+
+        <!-- Слайд 5: Практикалық мысал -->
+        <div class="slide" id="slide-4">
+            <h2>🎯 Практикалық Мысал</h2>
+            
+            <h3>Студенттердің бағаларын басқару жүйесі</h3>
+            <div class="code-container">
+<span class="python-keyword">class</span> <span class="python-method">GradeManager</span>:
+    <span class="python-keyword">def</span> <span class="python-method">__init__</span>(<span class="python-keyword">self</span>):
+        <span class="python-keyword">self</span>.<span class="python-keyword">students</span> = []
+        <span class="python-keyword">self</span>.<span class="python-keyword">grades</span> = []
+    
+    <span class="python-keyword">def</span> <span class="python-method">add_student</span>(<span class="python-keyword">self</span>, <span class="python-keyword">name</span>, <span class="python-keyword">grade</span>):
+        <span class="python-keyword">self</span>.<span class="python-keyword">students</span>.<span class="python-method">append</span>(<span class="python-keyword">name</span>)
+        <span class="python-keyword">self</span>.<span class="python-keyword">grades</span>.<span class="python-method">append</span>(<span class="python-keyword">grade</span>)
+    
+    <span class="python-keyword">def</span> <span class="python-method">get_average</span>(<span class="python-keyword">self</span>):
+        <span class="python-keyword">return</span> <span class="python-method">sum</span>(<span class="python-keyword">self</span>.<span class="python-keyword">grades</span>) / <span class="python-method">len</span>(<span class="python-keyword">self</span>.<span class="python-keyword">grades</span>)
+    
+    <span class="python-keywor
