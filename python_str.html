@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Строкалар Сабағы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.6s ease-out;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(45deg, #ffd700, #ffec8c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide h2 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            margin: 20px 0 15px 0;
+            color: #a8e6cf;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 1.1rem;
+            border-left: 4px solid #ffd700;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block::before {
+            content: 'Python';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #ffd700;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .keyword {
+            color: #4ecdc4;
+        }
+
+        .string {
+            color: #95e1d3;
+        }
+
+        .method {
+            color: #fce38a;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #a8e6cf;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid #ffd700;
+            transition: transform 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .intro-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            font-size: 1.2rem;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            top: 10px;
+        }
+
+        .quiz-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .slide p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">5</span>
+        </div>
+
+        <!-- Слайд 1: Кіріспе -->
+        <div class="slide active">
+            <h1>🐍 Python Строкалар (str)</h1>
+            <div class="intro-icon">📝</div>
+            <p style="text-align: center; font-size: 1.5rem; margin: 30px 0;">
+                Python тіліндегі мәтіндік деректермен жұмыс істеу
+            </p>
+            
+            <div class="example-box">
+                <h3>Строка дегеніміз не?</h3>
+                <p>Строка - бұл символдардың тізбегі. Python-да строкалар қосарного немесе жай тырнақшамен жазылады.</p>
+            </div>
+
+            <div class="code-block">
+<span class="keyword">name</span> = <span class="string">"Айгүл"</span>
+<span class="keyword">city</span> = <span class="string">'Алматы'</span>
+<span class="keyword">greeting</span> = <span class="string">"Сәлем, менің атым "</span> + <span class="keyword">name</span>
+
+<span class="keyword">print</span>(<span class="keyword">greeting</span>)  <span class="highlight"># Нәтиже: Сәлем, менің атым Айгүл</span>
+            </div>
+
+            <ul class="feature-list">
+                <li>Строкалар өзгермейтін (immutable) деректер түрі</li>
+                <li>Unicode символдарын қолдайды</li>
+                <li>Көптеген пайдалы әдістері бар</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 2: Негізгі операциялар -->
+        <div class="slide">
+            <h2>🔧 Негізгі Операциялар</h2>
+            
+            <h3>Қосу және Көбейту</h3>
+            <div class="code-block">
+<span class="keyword">first_name</span> = <span class="string">"Айгүл"</span>
+<span class="keyword">last_name</span> = <span class="string">"Сағындықова"</span>
+
+<span class="highlight"># Строкаларды қосу</span>
+<span class="keyword">full_name</span> = <span class="keyword">first_name</span> + <span class="string">" "</span> + <span class="keyword">last_name</span>
+<span class="keyword">print</span>(<span class="keyword">full_name</span>)  <span class="highlight"># Айгүл Сағындықова</span>
+
+<span class="highlight"># Строканы көбейту</span>
+<span class="keyword">laugh</span> = <span class="string">"ха"</span> * 3
+<span class="keyword">print</span>(<span class="keyword">laugh</span>)  <span class="highlight"># хахаха</span>
+            </div>
+
+            <h3>Индекстер мен Кесінділер</h3>
+            <div class="code-block">
+<span class="keyword">word</span> = <span class="string">"Python"</span>
+
+<span class="highlight"># Индекстер (0-ден басталады)</span>
+<span class="keyword">print</span>(<span class="keyword">word</span>[0])    <span class="highlight"># P</span>
+<span class="keyword">print</span>(<span class="keyword">word</span>[-1])   <span class="highlight"># n (соңғы символ)</span>
+
+<span class="highlight"># Кесінділер</span>
+<span class="keyword">print</span>(<span class="keyword">word</span>[0:3])  <span class="highlight"># Pyt</span>
+<span class="keyword">print</span>(<span class="keyword">word</span>[2:])   <span class="highlight"># thon</span>
+            </div>
+
+            <div class="example-box">
+                <p><strong>Маңызды:</strong> Python-да индекстер 0-ден басталады!</p>
+            </div>
+        </div>
+
+        <!-- Слайд 3: Пайдалы әдістер -->
+        <div class="slide">
+            <h2>⚡ Пайдалы Әдістер</h2>
+            
+            <div class="method-grid">
+                <div class="method-card">
+                    <h3><span class="method">upper()</span></h3>
+                    <p>Бас әріптерге айналдырады</p>
+                    <div class="code-block">
+<span class="string">"сәлем"</span>.<span class="method">upper</span>()
+<span class="highlight"># "СӘЛЕМ"</span>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3><span class="method">lower()</span></h3>
+                    <p>Кіші әріптерге айналдырады</p>
+                    <div class="code-block">
+<span class="string">"ДҮНИЕЖҮЗІ"</span>.<span class="method">lower</span>()
+<span class="highlight"># "дүниежүзі"</span>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3><span class="method">strip()</span></h3>
+                    <p>Басы мен соңындағы бос орындарды алып тастайды</p>
+                    <div class="code-block">
+<span class="string">"  сәлем  "</span>.<span class="method">strip</span>()
+<span class="highlight"># "сәлем"</span>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3><span class="method">replace()</span></h3>
+                    <p>Мәтінді ауыстырады</p>
+                    <div class="code-block">
+<span class="string">"Python жақсы"</span>.<span class="method">replace</span>(<span class="string">"жақсы"</span>, <span class="string">"керемет"</span>)
+<span class="highlight"># "Python керемет"</span>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3><span class="method">split()</span></h3>
+                    <p>Строканы бөледі</p>
+                    <div class="code-block">
+<span class="string">"алма,алмұрт,банан"</span>.<span class="method">split</span>(<span class="string">","</span>)
+<span class="highlight"># ["алма", "алмұрт", "банан"]</span>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3><span class="method">find()</span></h3>
+                    <p>Ішкі жолды табады</p>
+                    <div class="code-block">
+<span class="string">"Қазақстан"</span>.<span class="method">find</span>(<span class="string">"стан"</span>)
+<span class="highlight"># 4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Форматтау -->
+        <div class="slide">
+            <h2>🎨 Строкаларды Форматтау</h2>
+            
+            <h3>1. f-string (ең жаңа әдіс)</h3>
+            <div class="code-block">
+<span class="keyword">name</span> = <span class="string">"Асыл"</span>
+<span class="keyword">age</span> = 25
+
+<span class="keyword">message</span> = <span class="string">f"Менің атым {name}, жасым {age}"</span>
+<span class="keyword">print</span>(<span class="keyword">message</span>)
+<span class="highlight"># Менің атым Асыл, жасым 25</span>
+            </div>
+
+            <h3>2. format() әдісі</h3>
+            <div class="code-block">
+<span class="keyword">template</span> = <span class="string">"Сәлем, {}! Сіз {} жастасыз."</span>
+<span class="keyword">result</span> = <span class="keyword">template</span>.<span class="method">format</span>(<span class="string">"Нұрлан"</span>, 30)
+<span class="keyword">print</span>(<span class="keyword">result</span>)
+<span class="highlight"># Сәлем, Нұрлан! Сіз 30 жастасыз.</span>
+            </div>
+
+            <h3>3. % форматтау (ескі әдіс)</h3>
+            <div class="code-block">
+<span class="keyword">city</span> = <span class="string">"Астана"</span>
+<span class="keyword">population</span> = 1200000
+
+<span class="keyword">info</span> = <span class="string">"%s қаласының халқы %d адам"</span> % (<span class="keyword">city</span>, <span class="keyword">population</span>)
+<span class="keyword">print</span>(<span class="keyword">info</span>)
+<span class="highlight"># Астана қаласының халқы 1200000 адам</span>
+            </div>
+
+            <div class="example-box">
+                <h3>💡 Кеңес</h3>
+                <p>Жаңа жобаларда f-string әдісін қолданыңыз - ол ең тез әрі оқуға ыңғайлы!</p>
+            </div>
+        </div>
+
+        <!-- Слайд 5: Практикалық мысал және қорытынды -->
+        <div class="slide">
+            <h2>🎯 Практикалық Мысал</h2>
+            
+            <h3>Қарапайым мәтін өңдегіш</h3>
+            <div class="code-block">
+<span class="keyword">def</span> <span class="method">process_text</span>(<span class="keyword">text</span>):
+    <span class="highlight"># Мәтінді тазарту</span>
+    <span class="keyword">cleaned</span> = <span class="keyword">text</span>.<span class="method">strip</span>().<span class="method">lower</span>()
+    
+    <span class="highlight"># Сөздерге бөлу</span>
+    <span class="keyword">words</span> = <span class="keyword">cleaned</span>.<span class="method">split</span>()
+    
+    <span class="highlight"># Статистика</span>
+    <span class="keyword">word_count</span> = <span class="method">len</span>(<span class="keyword">words</span>)
+    <span class="keyword">char_count</span> = <span class="method">len</span>(<span class="keyword">cleaned</span>.<span class="method">replace</span>(<span class="string">" "</span>, <span class="string">""</span>))
+    
+    <span class="keyword">return</span> {
+        <span class="string">"мәтін"</span>: <span class="keyword">cleaned</span>.<span class="method">title</span>(),
+        <span class="string">"сөз_саны"</span>: <span class="keyword">word_count</span>,
+        <span class="string">"әріп_саны"</span>: <span class="keyword">char_count</span>
+    }
+
+<span class="highlight"># Қолдану мысалы</span>
+<span class="keyword">user_text</span> = <span class="string">"  PYTHON ТІЛІН ҮЙРЕНЕМІН!  "</span>
+<span class="keyword">result</span> = <span class="method">process_text</span>(<span class="keyword">user_text</span>)
+
+<span class="keyword">print</span>(<span class="string">f"Мәтін: {result['мәтін']}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Сөз саны: {result['сөз_саны']}"</span>)
+<span class="keyword">print</span>(<span class="string">f"Әріп саны: {result['әріп_саны']}"</span>)
+            </div>
+
+            <div class="quiz-section">
+                <h3>🧩 Мини Тапсырма</h3>
+                <div class="quiz-question">
+                    Келесі кодтың нәтижесі қандай болады?
+                </div>
+                <div class="code-block">
+<span class="string">"Қазақстан"</span>[2:5].<span class="method">upper</span>()
+                </div>
+                <div class="quiz-options">
+                    <div class="quiz-option">А) "ЗАҚ"</div>
+                    <div class="quiz-option">Б) "зақ"</div>
+                    <div class="quiz-option">В) "ЗАҚ"</div>
+                    <div class="quiz-option">Г) "ҚАЗАҚ"</div>
+                </div>
+                <p style="margin-top: 20px; color: #a8e6cf;"><strong>Жауабы:</strong> А) "ЗАҚ" (2-ші индекстен 5-ші индекске дейін, содан кейін бас әріптерге)</p>
+            </div>
+
+            <div class="example-box">
+                <h3>🎉 Қорытынды</h3>
+                <p>Python-дағы строкалар өте қуатты және икемді құрал. Олардың көмегімен сіз мәтіндік деректерді өңдеп, түрлендіре аласыз!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">⬅️ Артқа</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Алдыға ➡️</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Обновление состояния кнопок
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Клавиатурная навигация
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Инициализация
+        showSlide(0);
+
+        // Добавляем интерактивность к quiz опциям
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Убираем выделение с других опций
+                document.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.style.borderColor = 'transparent';
+                    opt.style.background = 'rgba(255, 255, 255, 0.1)';
+                });
+                
+                // Выделяем выбранную опцию
+                this.style.borderColor = '#ffd700';
+                this.style.background = 'rgba(255, 215, 0, 0.2)';
+            });
+        });
+
+        // Анимация для method cards
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
