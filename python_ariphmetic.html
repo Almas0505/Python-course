@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Арифметика және Айнымалылар</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 95vw;
+            height: 95vh;
+            max-width: 1200px;
+            max-height: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100px);
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h2 {
+            font-size: 2.3rem;
+            color: #34495e;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            padding: 20px 25px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 350px;
+            text-align: left;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+        }
+
+        .code-output {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .explanation {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            line-height: 1.5;
+            margin: 15px 0;
+            max-width: 800px;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+            background: linear-gradient(120deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .operators-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            max-width: 600px;
+        }
+
+        .operator-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .operator-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .operator-symbol {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .operator-name {
+            font-size: 0.9rem;
+            color: #34495e;
+            margin-top: 5px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-indicator {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #6c63ff;
+            transform: scale(1.3);
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 5px;
+            width: 120px;
+        }
+
+        .demo-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .calc-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .calc-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            text-align: right;
+            min-height: 50px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+
+        .variable-example {
+            background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 500px;
+        }
+
+        .variable-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+
+        .variable-value {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        .slide1 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); }
+        .slide2 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .slide3 { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .slide4 { background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%); }
+        .slide5 { background: linear-gradient(135deg, #c3f0ca 0%, #fde2f3 100%); }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Indicators -->
+        <div class="slide-indicator">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <!-- Slide 1: Кіріспе -->
+        <div class="slide slide1 active">
+            <h1>🔢 Python Арифметика және Айнымалылар</h1>
+            <div class="explanation">
+                <p><strong>Айнымалылар</strong> - бұл деректерді сақтау үшін қолданылатын контейнерлер</p>
+                <p><strong>Арифметика</strong> - математикалық есептеулер жасау</p>
+                <br>
+                <p>Бүгін біз үйренетініміз:</p>
+                <p>📊 Айнымалылар жасау</p>
+                <p>➕ Арифметикалық операторлар</p>
+                <p>🔄 Айнымалыларды өзгерту</p>
+                <p>🧮 Практикалық есептеулер</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Айнымалылар -->
+        <div class="slide slide2">
+            <h2>📦 Айнымалылар</h2>
+            <div class="explanation">
+                <p>Айнымалылар - бұл <span class="highlight">деректерді сақтайтын қораптар</span></p>
+            </div>
+
+            <div class="variable-example">
+                <div class="variable-name">атым</div>
+                <div class="variable-value">"Айдар"</div>
+            </div>
+            <div class="variable-example">
+                <div class="variable-name">жасым</div>
+                <div class="variable-value">25</div>
+            </div>
+            <div class="variable-example">
+                <div class="variable-name">бойым</div>
+                <div class="variable-value">175.5</div>
+            </div>
+
+            <div class="code-block">
+                <div># Айнымалылар жасау</div>
+                <div>атым = "Айдар"</div>
+                <div>жасым = 25</div>
+                <div>бойым = 175.5</div>
+                <div>студент_пе = True</div>
+            </div>
+
+            <div class="explanation">
+                <p>Айнымалы атаулары: әріптермен басталады, кеңістіксіз, арнайы белгілерсіз</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Арифметикалық операторлар -->
+        <div class="slide slide3">
+            <h2>🧮 Арифметикалық операторлар</h2>
+            
+            <div class="operators-grid">
+                <div class="operator-card">
+                    <div class="operator-symbol">+</div>
+                    <div class="operator-name">Қосу</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">-</div>
+                    <div class="operator-name">Азайту</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">*</div>
+                    <div class="operator-name">Көбейту</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">/</div>
+                    <div class="operator-name">Бөлу</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">//</div>
+                    <div class="operator-name">Бүтін бөлу</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">%</div>
+                    <div class="operator-name">Қалдық</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">**</div>
+                    <div class="operator-name">Дәреже</div>
+                </div>
+                <div class="operator-card">
+                    <div class="operator-symbol">=</div>
+                    <div class="operator-name">Тағайындау</div>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div>а = 10</div>
+                <div>б = 3</div>
+                <div>print(а + б)  # 13</div>
+                <div>print(а - б)  # 7</div>
+                <div>print(а * б)  # 30</div>
+                <div>print(а / б)  # 3.333...</div>
+                <div>print(а // б) # 3</div>
+                <div>print(а % б)  # 1</div>
+                <div>print(а ** б) # 1000</div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Практикалық мысалдар -->
+        <div class="slide slide4">
+            <h2>💡 Практикалық мысалдар</h2>
+            
+            <div class="code-block">
+                <div># Дүкенде есеп шығару</div>
+                <div>алма_бағасы = 500  # теңге</div>
+                <div>алма_саны = 3</div>
+                <div>банан_бағасы = 800</div>
+                <div>банан_саны = 2</div>
+                <br>
+                <div>жалпы_сома = (алма_бағасы * алма_саны) + (банан_бағасы * банан_саны)</div>
+                <div>print(f"Жалпы сома: {жалпы_сома} теңге")</div>
+            </div>
+
+            <div class="code-output">
+                Нәтиже: Жалпы сома: 3100 теңге
+            </div>
+
+            <div class="code-block">
+                <div># Температураны түрлендіру</div>
+                <div>цельсий = 25</div>
+                <div>фаренгейт = (цельсий * 9/5) + 32</div>
+                <div>print(f"{цельсий}°C = {фаренгейт}°F")</div>
+            </div>
+
+            <div class="code-output">
+                Нәтиже: 25°C = 77.0°F
+            </div>
+        </div>
+
+        <!-- Slide 5: Интерактивті калькулятор -->
+        <div class="slide slide5">
+            <h2>🎮 Интерактивті калькулятор</h2>
+            
+            <div class="interactive-demo">
+                <div class="calculator">
+                    <div class="calc-display" id="display">0</div>
+                    <button class="calc-btn" onclick="clearDisplay()">C</button>
+                    <button class="calc-btn" onclick="appendToDisplay('/')">/</button>
+                    <button class="calc-btn" onclick="appendToDisplay('*')">*</button>
+                    <button class="calc-btn" onclick="deleteLast()">⌫</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+                    <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+                    <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+                    <button class="calc-btn" onclick="appendToDisplay('-')">-</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+                    <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+                    <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+                    <button class="calc-btn" onclick="appendToDisplay('+')">+</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+                    <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+                    <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+                    <button class="calc-btn" onclick="calculate()" rowspan="2" style="grid-row: span 2; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">=</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('0')" style="grid-column: span 2;">0</button>
+                    <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <p>🎯 <strong>Тапсырма:</strong> Калькуляторды пайдаланып есептеп көріңіз:</p>
+                <p>• 15 + 27 = ?</p>
+                <p>• 144 / 12 = ?</p>
+                <p>• 8 * 9 = ?</p>
+            </div>
+
+            <div class="explanation">
+                <p>🎉 <strong>Қорытынды:</strong> Айнымалылар мен арифметика - бағдарламалаудың негізі!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◀ Артқа</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Алдыға ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+
+        // Calculator variables
+        let displayValue = '0';
+        let firstOperand = null;
+        let waitingForNewOperand = false;
+        let operator = null;
+
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.classList.remove('active', 'prev');
+            });
+            
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            if (n < currentSlide) {
+                slides[currentSlide].classList.add('prev');
+            }
+            slides[n].classList.add('active');
+            dots[n].classList.add('active');
+
+            document.getElementById('prevBtn').disabled = (n === 0);
+            document.getElementById('nextBtn').disabled = (n === totalSlides - 1);
+
+            if (n === totalSlides - 1) {
+                document.getElementById('nextBtn').textContent = '🎉 Аяқталды';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Алдыға ▶';
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Calculator functions
+        function updateDisplay() {
+            const display = document.getElementById('display');
+            display.textContent = displayValue;
+        }
+
+        function appendToDisplay(value) {
+            if (waitingForNewOperand) {
+                displayValue = value;
+                waitingForNewOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? value : displayValue + value;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            displayValue = '0';
+            firstOperand = null;
+            waitingForNewOperand = false;
+            operator = null;
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            displayValue = displayValue.slice(0, -1) || '0';
+            updateDisplay();
+        }
+
+        function calculate() {
+            const inputValue = parseFloat(displayValue);
+
+            if (firstOperand === null) {
+                firstOperand = inputValue;
+            } else if (operator) {
+                const currentValue = firstOperand || 0;
+                const newValue = performCalculation[operator](currentValue, inputValue);
+
+                displayValue = String(newValue);
+                firstOperand = newValue;
+            }
+
+            waitingForNewOperand = true;
+            operator = null;
+            updateDisplay();
+        }
+
+        const performCalculation = {
+            '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
+            '*': (firstOperand, secondOperand) => firstOperand * secondOperand,
+            '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
+            '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+        };
+
+        // Handle operators
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.calc-btn')) {
+                const value = e.target.textContent;
+                if (['+', '-', '*', '/'].includes(value)) {
+                    const inputValue = parseFloat(displayValue);
+
+                    if (firstOperand === null) {
+                        firstOperand = inputValue;
+                    } else if (operator) {
+                        const currentValue = firstOperand || 0;
+                        const newValue = performCalculation[operator](currentValue, inputValue);
+
+                        displayValue = String(newValue);
+                        firstOperand = newValue;
+                        updateDisplay();
+                    }
+
+                    waitingForNewOperand = true;
+                    operator = value;
+                }
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+        updateDisplay();
+    </script>
+</body>
+</html>
